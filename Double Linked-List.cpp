@@ -110,6 +110,24 @@ public:
 		}
 		delete temp;
 	}
+
+	// count number of Link
+	int count() {
+		Link * current = head;
+		if (head == NULL) {
+			return 0;
+		}
+		else {
+			int count = 1;
+			while (current->next != NULL) {
+				current = current->next;
+				count++;
+			}
+			return count;
+		}
+		
+	}
+
 	// Display
 	void display() {
 		Link * current = head;
@@ -130,16 +148,17 @@ public:
 
 int main(){
 	LinkedList l1;
-	l1.insert(1);	//	1 -> End
-	l1.insert(3);	// 1 <-> 3 -> End
-	l1.del();	// 1 -> End
-	l1.insertAt(2, 1);	// 2 <-> 1 -> End
+	l1.insert(1);				//	1 -> End
+	l1.insert(3);				// 1 <-> 3 -> End
+	l1.del();					// 1 -> End
+	l1.insertAt(2, 1);			// 2 <-> 1 -> End
 	l1.display();
-	l1.insertAt(2, 5);	//	Won't work
-	l1.insertAt(2, 3);	//	2 <-> 1 <-> 2 -> End
+	l1.insertAt(2, 5);			//	Won't work
+	l1.insertAt(2, 3);			//	2 <-> 1 <-> 2 -> End
 	l1.display();
-	l1.delAt(2);	//	2 <-> 2 -> End
+	l1.delAt(2);				//	2 <-> 2 -> End
 	l1.display();
+	cout << l1.count() << "\n";	// 2 Links
 
 	return 0;
 }
