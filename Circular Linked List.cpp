@@ -54,8 +54,42 @@ public:
 		}
 	}
 	// Delete
+	void del() {
+		Node*current = head;
+		while (current->next != tail) {
+			current = current->next;
+		}
+		Node*temp = tail;
+		tail = current;
+		current->next = head;
+		temp->next = NULL;
+		delete temp;
+	}
 	// DeleteAt
+	void delAt(int pos) {
+		Node * current = head;
+		for (int i = 1; i < pos - 1; i++) {
+			if (current->next == head) {
+				cout << "Doesn't have that many Nodes.\n";
+				return;
+			}
+			current = current->next;
+		}
+		Node * temp = current->next;
+		current->next = temp->next;
+		temp->next = NULL;
+		delete temp;
+	}
 	// Count
+	void count() {
+		Node * current = head;
+		int i = 1;
+		while (current != tail) {
+			current = current->next;
+			i++;
+		}
+		cout << "\n The no. of Nodes is " << i << ".\n";
+	}
 	// Display
 	void display() {
 		Node * current = head;
@@ -84,8 +118,10 @@ int main(){
 	l1.insertAt(0, 1);
 	l1.insertAt(3, 3);
 	l1.insertAt(6, 5);
-
-	
+	l1.del();
+	l1.delAt(3);
+	l1.delAt(9);
 	l1.display();
+	l1.count();
 	return 0;
 }
