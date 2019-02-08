@@ -54,16 +54,27 @@ public:
 
 	void insertAt(int pos, int value) {
 		Node * current = head;
-		for (int i = 1; i < pos-1; i++) {
-			current = current->next;
-		}
-
 		// Create a node
 		Node * temp = new Node;
 		temp->data = value;
 
-		temp->next = current->next;
-		current->next = temp;
+		if (pos == 1) {
+			if (head != NULL) {
+				temp->next = head;
+			}
+			head = temp;
+			if (tail != NULL) {
+				tail = temp;
+			}
+		}
+		else {
+			for (int i = 1; i < pos - 1; i++) {
+				current = current->next;
+			}
+
+			temp->next = current->next;
+			current->next = temp;
+		}
 	}
 
 	// Deletion
@@ -72,58 +83,94 @@ public:
 		Node * temp = tail;
 		// tail should point to NULL before deletion (eliminating connections)
 		Node * current = head;
-		while (current->next != tail) {
-			current = current->next;
+		// Empty LinkedList
+		if (current == NULL) {
+			cout << "Doesn't have that many Nodes \n";
+			return;
 		}
-		current->next = NULL;
+		// LinkedList having 1 Node
+		else if (current == tail) {
+			head = NULL;
+			tail = NULL;
+			delete current;
+		}
 
-		// update tail
-		tail = current;
-		// delete temp
-		delete temp;
+		// Else
+		else if (current != tail) {
+			while (current->next != tail) {
+				current = current->next;
+			}
+			current->next = NULL;
+
+			// update tail
+			tail = current;
+			// delete temp
+			delete temp;
+		}
 
 	}
 
 	// Delete at a position
 	void deleteAt(int pos){
 		Node * current = head;
-		for (int i = 1; i < pos-1; i++) {
-			current = current->next;
-		}
-
-		if (current->next != NULL) {
-			Node * deletenode = current->next;
-
-			if (current->next->next != NULL) {
-				Node * temp = current->next->next;
-				current->next = temp;
+		if (pos==1) {
+			if (head != NULL) {
+				head = current->next;
+				current->next = NULL;
+				delete current;
 			}
-			else{
-				current->next = NULL; 
+			else
+			{
+				cout << "Linked List does no have that many elements" << "\n";
 			}
-			
-			delete deletenode;
 		}
-		
-		else
-		{
-			cout << "Linked List does no have that many elements" << "\n";
+		else {
+			for (int i = 1; i < pos - 1; i++) {
+				current = current->next;
+			}
+
+			if (current->next != NULL) {
+				Node * deletenode = current->next;
+
+				if (current->next->next != NULL) {
+					Node * temp = current->next->next;
+					current->next = temp;
+				}
+				else {
+					current->next = NULL;
+				}
+
+				delete deletenode;
+			}
+
+			else
+			{
+				cout << "Linked List does no have that many elements" << "\n";
+			}
 		}
 		
 	}
 
-
-	// Display
-	void display() {
+	// Count
+	int count() {
 		Node * current = head;
-		int count = 0;
+		int count = 0;	/********************* Count number of Nodes ***********************/
 		while (current != NULL) {
-			cout << current->data << "->";
 			current = current->next;
 			count++;
 		}
+		return count;
+	}
+	// Display
+	void display() {
+		Node * current = head;
+
+		while (current != NULL) {
+			cout << current->data << "->";
+			current = current->next;
+		}
 		cout << "NULL" << "\n" ;
-		cout << "Numbers of nodes in the Linked List is " << count << "\n";
+		
 	}
 
 
@@ -156,30 +203,68 @@ public:
 	}
 
 
+	// Displaying Linked List in reverse order
+	int RevDisplay(Node *current){
+		if (current == NULL) {
+			return 0;
+		}
+		else {
+			RevDisplay(current->next);
+			cout << current->data << "->";
+			if(current == head) cout << "END\n";
+			return 0;
+		}
+	
+	}
+
+	// Reverse the Linked List
+	void revLL(Node * current, Node * pre) {
+		if (current == NULL) {
+			return;
+		}
+		else if (current->next == NULL) {
+			head = current;
+			current->next = pre;
+			return;
+		}
+		else {
+			revLL(current->next, current);
+			current->next = pre;
+			return;
+		}
+	}
 };
 
+/*
 int main()
 {
 	LinkedList l1;
-	l1.insert(1);
-	l1.insert(2);
-	l1.insert(4);
-	l1.insert(1);
-	l1.insert(2);
-	l1.insert(4);
-	l1.insert(1);
-	l1.insert(2);
-	l1.insert(4);
-	l1.insertAt(3, 3);
-	l1.delet();
-	l1.deleteAt(5);
-	l1.display();
+
+	l1.insert(1);	// 1->NULL
+	l1.insert(2);	// 1->2->NULL
+	l1.insert(4);	// 1->2->4->NULL
+	l1.insert(1);	// 1->2->4->1->NULL
+	l1.insert(2);	// 1->2->4->1->2->NULL
+	l1.insert(4);	// 1->2->4->1->2->4->NULL
+	l1.insert(1);	// 1->2->4->1->2->4->1->NULL
+	l1.insert(2);	// 1->2->4->1->2->4->1->2->NULL
+	l1.insert(4);	// 1->2->4->1->2->4->1->2->4->NULL
+
+	l1.display();	// 1->2->4->1->2->4->1->2->4->NULL *********DISPLAYED**********
+
+
+	l1.insertAt(3, 3);	// 1->2->3->4->1->2->4->1->2->4->NULL
+	l1.delet();		// 1->2->3->4->1->2->4->1->2->NULL
+	l1.deleteAt(5);	// 1->2->3->4->2->4->1->2->NULL
+	l1.display();	// 1->2->3->4->2->4->1->2->NULL	*************DISPLAYED**********
 
 	
-	l1.delRepeat();
-	l1.display();
-
-	
+	l1.delRepeat();	// 1->2->3->4->NULL
+	l1.display();	// 1->2->3->4->NULL	*********DISPLAYED************
+	l1.RevDisplay(l1.head);	//	4->3->2->1	***********DISPLAYED***********
+	l1.revLL(l1.head, NULL);	// 4->3->2->1->NULL	~~~~~~~~~CONVERTED~~~~~~~~~
+	l1.display();	// 4->3->2->1->NULL	*********DISPLAYED***********
 
 	return 0;
 }
+*/
