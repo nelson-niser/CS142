@@ -168,6 +168,18 @@ public:
 	}
 
 	// Find minimum
+	Node * findMin(int value) {
+		return findMinHelper(search(value));
+	}
+
+	Node * findMinHelper(Node * current) {
+		if (current->left == NULL) {
+			return current;
+		}
+		else {
+			return findMinHelper(current->left);
+		}
+	}
 
 	// Count total nodes
 	int count(){
@@ -195,7 +207,49 @@ public:
 	}
 
 
-	// Replace with parent
+	// Replace A with B at parent of A
+	void replaceAtParent(Node * A, Node * B){
+		if (A->parent->left == A) {
+			A->parent->left = B;
+		}
+		else {
+			A->parent->right = B;
+		}
+		delete A;
+	}
+
+	// Delete
+	void del(int value) {
+		delHelper(search(value));
+	}
+
+	void delHelper(Node * temp) {
+		// Case 1: Have no child.
+		if (temp->left == NULL and temp->right == NULL) {
+			if (temp->parent->left == temp) {
+				temp->parent->left = NULL;
+			}
+			else {
+				temp->parent->right = NULL;
+			}
+			delete temp;
+		}
+		// Case 2: Have one child.
+		else if (temp->left == NULL and temp->right != NULL) {
+			replaceAtParent(temp, temp->right);
+		}
+		else if (temp->left != NULL and temp->right == NULL) {
+			replaceAtParent(temp, temp->left);
+		}
+		// Case 3: Have two child.
+		else {
+			int min = findMin(temp->right->data)->data;
+			del(min);
+			temp->data = min;
+			
+		}
+
+	}
 
 };
 
@@ -211,20 +265,33 @@ int main() {
 
 	b1.insert(6);
 	b1.insert(7);
-	b1.insert(4);
+	//b1.insert(4);
 	b1.insert(1);
 	b1.insert(5);
 	b1.insert(2);
 
 	b1.display();
+	cout << "\n";
 
 	for (int i = 1; i < 10; i++) {
 		if (b1.search(i) != NULL) {
-			cout << endl << b1.search(i)->data << " : Search Found." << endl;
+			cout << b1.search(i)->data << " : Search Found." << endl;
+		}
+		else {
+			cout << "'" << i << "' " << "Not Found.\n";
 		}
 	}
 
-	cout << "\n" << "Count: " << b1.count() << "\n";
+	cout << "Count: " << b1.count() << "\n\n";
+	cout <<"Min 3: " << b1.findMin(3)->data << "\n";
+	cout <<"Min 6: " << b1.findMin(6)->data << "\n";
+	//cout << "Min 4: " << b1.findMin(4)->data << "\n";
+
+	b1.del(1);
+	b1.del(3);
+
+	b1.display();
+	cout << "\n";
 
 	return 0;
 }
